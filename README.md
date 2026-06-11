@@ -38,29 +38,26 @@ This project uses **pnpm**. Vercel detects `pnpm-lock.yaml` automatically.
 
 ### Convex + Vercel (production)
 
-1. **Deploy Convex backend** (run once, or after backend changes):
+1. **Create a Convex deploy key for Vercel** (once):
 
 ```bash
-pnpm exec convex deploy
+pnpm exec convex deployment token create vercel --prod --save-env
 ```
 
-Confirm when prompted. Production URL:
+Copy the generated `CONVEX_DEPLOY_KEY` into Vercel → Project Settings → Environment Variables for **Production** (and Preview if you want preview builds).
 
-`https://energetic-monitor-366.convex.cloud`
+2. **Vercel environment variables**:
 
-2. **Vercel environment variables** (already configured for production):
-
+- `CONVEX_DEPLOY_KEY` — from step 1 (required for `pnpm build:vercel`)
 - `NEXT_PUBLIC_CONVEX_URL` = `https://energetic-monitor-366.convex.cloud`
 - `NEXT_PUBLIC_CONVEX_SITE_URL` = `https://energetic-monitor-366.convex.site`
 
-3. **Redeploy Vercel** after env changes:
+3. **Deploy**: push to GitHub or run:
 
 ```bash
 pnpm dlx vercel --prod
 ```
 
-### Optional: auto-deploy Convex on every Vercel build
+The repo includes `vercel.json` with `buildCommand: pnpm build:vercel`, which runs Convex deploy and the Next.js build in CI without interactive prompts.
 
-1. Create a deploy key: `pnpm exec convex deployment token create vercel --prod --save-env`
-2. Add `CONVEX_DEPLOY_KEY` to Vercel (Production)
-3. Set Vercel build command to: `pnpm build:vercel`
+<!-- deploy test trigger -->
