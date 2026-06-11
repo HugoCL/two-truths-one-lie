@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Two Truths, One Lie
+
+A real-time party game built with Next.js and Convex.
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Run the development servers:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Terminal 1 — Convex backend
+pnpm exec convex dev
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Terminal 2 — Next.js frontend
+pnpm dev
+```
 
-## Learn More
+Open [http://localhost:3000](http://localhost:3000) to play.
 
-To learn more about Next.js, take a look at the following resources:
+## Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm dev        # Start Next.js dev server
+pnpm build      # Production build
+pnpm start      # Start production server
+pnpm lint       # Run ESLint
+pnpm typecheck  # Run TypeScript checks
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deploy
 
-## Deploy on Vercel
+This project uses **pnpm**. Vercel detects `pnpm-lock.yaml` automatically.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Convex + Vercel (production)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Deploy Convex backend** (run once, or after backend changes):
+
+```bash
+pnpm exec convex deploy
+```
+
+Confirm when prompted. Production URL:
+
+`https://energetic-monitor-366.convex.cloud`
+
+2. **Vercel environment variables** (already configured for production):
+
+- `NEXT_PUBLIC_CONVEX_URL` = `https://energetic-monitor-366.convex.cloud`
+- `NEXT_PUBLIC_CONVEX_SITE_URL` = `https://energetic-monitor-366.convex.site`
+
+3. **Redeploy Vercel** after env changes:
+
+```bash
+pnpm dlx vercel --prod
+```
+
+### Optional: auto-deploy Convex on every Vercel build
+
+1. Create a deploy key: `pnpm exec convex deployment token create vercel --prod --save-env`
+2. Add `CONVEX_DEPLOY_KEY` to Vercel (Production)
+3. Set Vercel build command to: `pnpm build:vercel`
