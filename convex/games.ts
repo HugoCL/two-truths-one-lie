@@ -145,7 +145,6 @@ export const getGameState = query({
   args: {
     gameId: v.id("games"),
     sessionId: v.string(),
-    now: v.number(),
   },
   returns: v.union(gameStateValidator, v.null()),
   handler: async (ctx, args) => {
@@ -159,7 +158,6 @@ export const getGameState = query({
     const playerNameById = new Map(players.map((p) => [p._id, p.displayName]));
 
     let currentRound = null;
-    let countdownSecondsRemaining: number | null = null;
 
     if (game.status === "playing") {
       const round = await getCurrentRound(
@@ -215,16 +213,6 @@ export const getGameState = query({
           }));
         }
 
-        if (
-          round.phase === "voting" &&
-          round.voteCountdownEndsAt !== undefined
-        ) {
-          countdownSecondsRemaining = Math.max(
-            0,
-            Math.ceil((round.voteCountdownEndsAt - args.now) / 1000),
-          );
-        }
-
         currentRound = {
           _id: round._id,
           roundNumber: round.roundNumber,
@@ -254,7 +242,6 @@ export const getGameState = query({
         joinedAt: p.joinedAt,
       })),
       currentRound,
-      countdownSecondsRemaining,
     };
   },
 });

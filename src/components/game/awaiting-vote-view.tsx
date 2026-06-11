@@ -41,9 +41,14 @@ export function AwaitingVoteView({
 
   return (
     <div className="mx-auto flex w-full max-w-lg flex-col gap-4">
-      <Card className="border-white/10 bg-white/5">
+      <Card className="animate-rise border-white/10 bg-zinc-900/70 shadow-2xl shadow-black/40 backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-2xl">{submitterName}&apos;s statements</CardTitle>
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-400/80">
+            Read carefully
+          </p>
+          <CardTitle className="font-display text-2xl font-bold">
+            {submitterName}&apos;s statements
+          </CardTitle>
           <p className="text-zinc-400">
             {canStartVote
               ? "Ready when you are — start the vote countdown."
@@ -57,7 +62,8 @@ export function AwaitingVoteView({
 
           {canStartVote && (
             <Button
-              className="mt-2 w-full bg-amber-500 text-zinc-950 hover:bg-amber-400"
+              size="lg"
+              className="mt-2 h-12 w-full bg-amber-500 text-base font-semibold text-zinc-950 shadow-lg shadow-amber-500/25 transition-all hover:bg-amber-400 hover:shadow-amber-400/30 active:scale-[0.98]"
               onClick={() => void handleStartVote()}
               disabled={loading}
             >
@@ -66,7 +72,9 @@ export function AwaitingVoteView({
           )}
 
           {error && (
-            <p className="text-center text-sm text-rose-400">{error}</p>
+            <p className="animate-pop rounded-lg border border-rose-400/30 bg-rose-500/10 px-3 py-2 text-center text-sm text-rose-300">
+              {error}
+            </p>
           )}
         </CardContent>
       </Card>

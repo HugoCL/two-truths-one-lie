@@ -7,6 +7,7 @@ import type { Id } from "../../../convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import { getOrCreateSessionId } from "@/lib/session";
 
 export function SubmitView({ gameId }: { gameId: Id<"games"> }) {
@@ -39,19 +40,48 @@ export function SubmitView({ gameId }: { gameId: Id<"games"> }) {
 
   return (
     <div className="mx-auto w-full max-w-lg">
-      <Card className="border-white/10 bg-white/5">
+      <Card className="animate-rise border-white/10 bg-zinc-900/70 shadow-2xl shadow-black/40 backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-2xl">Your turn!</CardTitle>
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-400/80">
+            Your turn
+          </p>
+          <CardTitle className="font-display text-3xl font-bold">
+            Write your three statements
+          </CardTitle>
           <p className="text-zinc-400">
-            Share two truths and one lie. Other players will try to spot the lie.
+            Two truths and one lie. Make the lie believable!
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
           {statements.map((statement, index) => (
-            <div key={index} className="space-y-2">
-              <label className="text-sm font-medium text-zinc-400">
-                Statement {index + 1}
-              </label>
+            <div
+              key={index}
+              style={{ animationDelay: `${index * 80}ms` }}
+              className={cn(
+                "animate-rise space-y-2 rounded-2xl border p-4 transition-colors",
+                lieIndex === index
+                  ? "border-rose-400/50 bg-rose-500/[0.08]"
+                  : "border-white/10 bg-white/[0.03]",
+              )}
+            >
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium text-zinc-300">
+                  Statement {index + 1}
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setLieIndex(index)}
+                  aria-pressed={lieIndex === index}
+                  className={cn(
+                    "rounded-full border px-3 py-1 text-xs font-semibold transition-all",
+                    lieIndex === index
+                      ? "border-rose-400/60 bg-rose-500/20 text-rose-300"
+                      : "border-white/10 bg-white/5 text-zinc-500 hover:border-rose-400/40 hover:text-rose-300",
+                  )}
+                >
+                  {lieIndex === index ? "✓ The lie" : "Mark as lie"}
+                </button>
+              </div>
               <Input
                 value={statement}
                 onChange={(e) => {
@@ -59,26 +89,20 @@ export function SubmitView({ gameId }: { gameId: Id<"games"> }) {
                   next[index] = e.target.value;
                   setStatements(next);
                 }}
-                placeholder={`Enter statement ${index + 1}`}
+                placeholder={
+                  index === 0
+                    ? "e.g. I once met a celebrity at the airport"
+                    : `Enter statement ${index + 1}`
+                }
                 maxLength={200}
-                className="border-white/10 bg-white/5"
+                className="h-11 border-white/10 bg-white/5 focus-visible:border-amber-400/60 focus-visible:ring-amber-400/30"
               />
-              <button
-                type="button"
-                onClick={() => setLieIndex(index)}
-                className={`text-sm font-medium ${
-                  lieIndex === index
-                    ? "text-rose-400"
-                    : "text-zinc-500 hover:text-zinc-300"
-                }`}
-              >
-                {lieIndex === index ? "✓ This is the lie" : "Mark as the lie"}
-              </button>
             </div>
           ))}
 
           <Button
-            className="w-full bg-amber-500 text-zinc-950 hover:bg-amber-400"
+            size="lg"
+            className="h-12 w-full bg-amber-500 text-base font-semibold text-zinc-950 shadow-lg shadow-amber-500/25 transition-all hover:bg-amber-400 hover:shadow-amber-400/30 active:scale-[0.98]"
             onClick={() => void handleSubmit()}
             disabled={loading}
           >
@@ -86,7 +110,9 @@ export function SubmitView({ gameId }: { gameId: Id<"games"> }) {
           </Button>
 
           {error && (
-            <p className="text-center text-sm text-rose-400">{error}</p>
+            <p className="animate-pop rounded-lg border border-rose-400/30 bg-rose-500/10 px-3 py-2 text-center text-sm text-rose-300">
+              {error}
+            </p>
           )}
         </CardContent>
       </Card>

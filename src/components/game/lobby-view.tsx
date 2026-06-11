@@ -60,36 +60,48 @@ export function LobbyView({
 
   return (
     <div className="mx-auto flex w-full max-w-lg flex-col gap-6">
-      <Card className="border-white/10 bg-white/5">
+      <Card className="animate-rise border-white/10 bg-zinc-900/70 shadow-2xl shadow-black/40 backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-2xl">Waiting in lobby</CardTitle>
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-400/80">
+            Lobby
+          </p>
+          <CardTitle className="font-display text-3xl font-bold">
+            Gather your players
+          </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="rounded-xl border border-amber-400/30 bg-amber-400/10 p-4 text-center">
-            <p className="text-sm text-zinc-400">Invite code</p>
-            <p className="mt-1 font-mono text-3xl font-bold tracking-[0.3em] text-amber-300">
+        <CardContent className="space-y-5">
+          <div className="rounded-2xl border border-dashed border-amber-400/40 bg-amber-400/[0.07] p-5 text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
+              Invite code
+            </p>
+            <p className="mt-2 font-mono text-4xl font-bold tracking-[0.35em] text-amber-300 [text-shadow:0_0_24px_rgb(251_191_36_/_0.35)]">
               {inviteCode}
             </p>
             <Button
               variant="secondary"
-              className="mt-3"
+              className="mt-4 border border-white/10 bg-white/10 hover:bg-white/15"
               onClick={() => void handleCopy()}
             >
-              {copied ? "Copied!" : "Copy invite link"}
+              {copied ? "✓ Copied!" : "Copy invite link"}
             </Button>
           </div>
 
           <div>
-            <p className="mb-3 text-sm text-zinc-400">
-              {players.length} player{players.length === 1 ? "" : "s"} joined
-            </p>
+            <div className="mb-3 flex items-center justify-between text-sm">
+              <p className="font-medium text-zinc-300">Players</p>
+              <p className="text-zinc-500">
+                {players.length} joined
+                {players.length < 2 && " · need 2+"}
+              </p>
+            </div>
             <PlayerList players={players} highlightId={myPlayerId} />
           </div>
 
           {isHost ? (
             <div className="space-y-2">
               <Button
-                className="w-full bg-amber-500 text-zinc-950 hover:bg-amber-400"
+                size="lg"
+                className="h-12 w-full bg-amber-500 text-base font-semibold text-zinc-950 shadow-lg shadow-amber-500/25 transition-all hover:bg-amber-400 hover:shadow-amber-400/30 active:scale-[0.98]"
                 onClick={() => void handleStart()}
                 disabled={loading || players.length < 2}
               >
@@ -97,18 +109,20 @@ export function LobbyView({
               </Button>
               {players.length < 2 && (
                 <p className="text-center text-sm text-zinc-500">
-                  Need at least 2 players to start
+                  Waiting for at least one more player...
                 </p>
               )}
             </div>
           ) : (
-            <p className="text-center text-sm text-zinc-500">
+            <p className="animate-pulse-soft text-center text-sm text-zinc-500">
               Waiting for the host to start the game...
             </p>
           )}
 
           {error && (
-            <p className="text-center text-sm text-rose-400">{error}</p>
+            <p className="animate-pop rounded-lg border border-rose-400/30 bg-rose-500/10 px-3 py-2 text-center text-sm text-rose-300">
+              {error}
+            </p>
           )}
         </CardContent>
       </Card>

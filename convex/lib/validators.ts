@@ -40,5 +40,4 @@ export const gameStateValidator = v.object({
   myPlayerId: v.union(v.id("players"), v.null()),
   players: v.array(playerValidator),
   currentRound: v.union(roundValidator, v.null()),
-  countdownSecondsRemaining: v.union(v.number(), v.null()),
 });

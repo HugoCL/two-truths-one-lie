@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
-import { useNow } from "@/hooks/use-now";
 import { getOrCreateSessionId } from "@/lib/session";
 import { LobbyView } from "./lobby-view";
 import { SubmitView } from "./submit-view";
@@ -15,17 +14,15 @@ import { RevealView } from "./reveal-view";
 import { FinishedView } from "./finished-view";
 
 export function GameShell({ gameId }: { gameId: Id<"games"> }) {
-  const now = useNow();
   const sessionId = getOrCreateSessionId();
   const gameState = useQuery(api.games.getGameState, {
     gameId,
     sessionId,
-    now,
   });
 
   if (gameState === undefined) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center text-zinc-400">
+      <div className="animate-pulse-soft flex min-h-[50vh] items-center justify-center text-zinc-400">
         Loading game...
       </div>
     );
@@ -33,9 +30,15 @@ export function GameShell({ gameId }: { gameId: Id<"games"> }) {
 
   if (gameState === null) {
     return (
-      <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 text-center">
-        <p className="text-xl text-zinc-300">Game not found</p>
-        <Link href="/" className="text-amber-400 hover:underline">
+      <div className="animate-rise flex min-h-[50vh] flex-col items-center justify-center gap-4 text-center">
+        <p className="font-display text-2xl font-bold text-zinc-200">
+          Game not found
+        </p>
+        <p className="text-zinc-500">This game may have ended or never existed.</p>
+        <Link
+          href="/"
+          className="rounded-xl border border-amber-400/40 bg-amber-400/10 px-5 py-2.5 font-medium text-amber-300 transition-colors hover:bg-amber-400/20"
+        >
           Back to home
         </Link>
       </div>
@@ -104,7 +107,7 @@ export function GameShell({ gameId }: { gameId: Id<"games"> }) {
           gameId={gameState.gameId}
           submitterName={round.submitterName}
           statements={round.statements}
-          countdownSeconds={gameState.countdownSecondsRemaining ?? 0}
+          voteCountdownEndsAt={round.voteCountdownEndsAt}
           canVote={!isSubmitter}
           voteCounts={round.voteCounts}
         />
